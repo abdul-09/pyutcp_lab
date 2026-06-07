@@ -7,7 +7,7 @@ simulated read) says so, so deadline handling is fully deterministic.
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Callable, Optional
 
 from pyutcp_lab.core.errors import TransportError
 from pyutcp_lab.transports.http import Connection
@@ -64,3 +64,27 @@ class FakeConnection(Connection):
 
     def close(self) -> None:
         self.closed = True
+
+
+class Interleaver:
+    """Runs an injected action at a chosen pool yield point.
+
+    The pool calls :meth:`hook` at each cooperative yield point, passing the
+    point's name. When the hook fires for the target point for the first time,
+    the interleaver runs ``action`` once — simulating another caller running to
+    completion in the middle of the first caller's ``acquire``. This makes a
+    check-then-act race deterministic: it triggers on every run or never.
+    """
+
+    def __init__(self, at_point: str, action: Callable[[], None]) -> None:
+        self._at_point = at_point
+        self._action = action
+        self._fired = False
+        self.points: list[str] = []
+
+    def hook(self, point: str) -> None:
+        self.points.append(point)
+        if point == self._at_point and not self._fired:
+            self._fired = True
+            self._action()
+
