@@ -20,7 +20,7 @@ in place. Transports, registry, and agent layers are landing incrementally.
 pyutcp_lab/
   core/        domain models, ${VAR} substitution, typed errors
   transports/  HTTP / SSE / CLI transports + connection pool   (HTTP + pool done)
-  registry/    in-memory repository, search index, result cache (planned)
+  registry/    in-memory repository, search index, result cache (repository done)
   agent/       orchestrator, checkpointing, conversation memory (planned)
 ```
 
