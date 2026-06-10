@@ -88,3 +88,50 @@ class Interleaver:
             self._fired = True
             self._action()
 
+
+class FakeTransport:
+    """A transport whose calls consume simulated time from a shared clock.
+
+    Each :meth:`call` advances ``clock`` by ``call_cost`` seconds and records
+    the deadline it was handed (so tests can assert the client threaded one in).
+    If a deadline is supplied and the simulated read would push past it, the
+    call raises, mirroring a real transport that honours its deadline.
+    """
+
+    def __init__(
+        self,
+        clock: "FakeClock",
+        *,
+        call_cost: float = 0.0,
+        result: object = "ok",
+    ) -> None:
+        self._clock = clock
+        self._call_cost = call_cost
+        self._result = result
+        self.received_deadlines: list[object] = []
+        self.remaining_at_call: list[object] = []
+        self.call_count = 0
+
+    def discover(self, *, deadline: object = None) -> object:  # pragma: no cover
+        raise NotImplementedError
+
+    def call(self, call: object, *, deadline: object = None) -> object:
+        self.received_deadlines.append(deadline)
+        self.remaining_at_call.append(
+            deadline.remaining() if deadline is not None else None
+        )
+        self.call_count += 1
+        # If a deadline was supplied, refuse to run past it.
+        if deadline is not None and deadline.remaining() < self._call_cost:
+            from pyutcp_lab.core.errors import TimeoutError as _Timeout
+
+            raise _Timeout("call would exceed its deadline")
+        self._clock.advance(self._call_cost)
+        return self._result
+
+    def stream(self, call: object, *, deadline: object = None):  # pragma: no cover
+        raise NotImplementedError
+
+    def close(self) -> None:  # pragma: no cover
+        return None
+
