@@ -5,6 +5,7 @@ the top level for now; transports, registry, and agent layers land in later
 milestones.
 """
 
+from .client import Budget, UtcpClient
 from .core import (
     Manual,
     Provider,
@@ -18,11 +19,13 @@ from .core import (
 __version__ = "0.1.0"
 
 __all__ = [
+    "Budget",
     "Manual",
     "Provider",
     "Tool",
     "ToolCall",
     "TransportType",
+    "UtcpClient",
     "UtcpError",
     "VariableResolver",
     "__version__",
