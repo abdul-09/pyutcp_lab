@@ -22,7 +22,7 @@ pyutcp_lab/
   transports/  HTTP / SSE / CLI transports + connection pool   (done)
   registry/    in-memory repository, search index, result cache (done)
   client/      UtcpClient: register, call, latency budget           (done)
-  agent/       orchestrator, checkpointing, conversation memory (planned)
+  agent/       orchestrator, checkpointing, conversation memory (orchestrator + checkpoint done)
 ```
 
 ## Development
