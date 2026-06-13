@@ -135,3 +135,20 @@ class FakeTransport:
     def close(self) -> None:  # pragma: no cover
         return None
 
+
+class FakeClient:
+    """A stand-in UtcpClient whose call() echoes a deterministic result.
+
+    Each call returns ``{"tool": <name>, "n": <call_index>}`` so tests can assert
+    on both which tool ran and the order it ran in. Every call is recorded.
+    """
+
+    def __init__(self) -> None:
+        self.calls: list[str] = []
+
+    def call(self, call: object, *, deadline: object = None) -> object:
+        name = call.tool_name  # type: ignore[attr-defined]
+        index = len(self.calls)
+        self.calls.append(name)
+        return {"tool": name, "n": index}
+
