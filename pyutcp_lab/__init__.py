@@ -5,7 +5,7 @@ the top level for now; transports, registry, and agent layers land in later
 milestones.
 """
 
-from .agent import Checkpoint, Orchestrator
+from .agent import Checkpoint, ConversationHistory, Orchestrator
 from .client import Budget, UtcpClient
 from .core import (
     Manual,
@@ -22,6 +22,7 @@ __version__ = "0.1.0"
 __all__ = [
     "Budget",
     "Checkpoint",
+    "ConversationHistory",
     "Manual",
     "Orchestrator",
     "Provider",
