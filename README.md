@@ -12,7 +12,7 @@ wrapper server.
 ## Status
 
 Early. The core layer (domain models, variable substitution, error hierarchy) is
-in place. Transports, registry, and agent layers are landing incrementally.
+in place, along with the transport, registry, client, and agent layers.
 
 ## Layout
 
@@ -22,7 +22,7 @@ pyutcp_lab/
   transports/  HTTP / SSE / CLI transports + connection pool   (done)
   registry/    in-memory repository, search index, result cache (done)
   client/      UtcpClient: register, call, latency budget           (done)
-  agent/       orchestrator, checkpointing, conversation memory (orchestrator + checkpoint done)
+  agent/       orchestrator, checkpointing, conversation memory (done)
 ```
 
 ## Development
