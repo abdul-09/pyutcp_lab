@@ -15,6 +15,7 @@ dependencies = [
 dev = [
     "pytest>=8",
     "pytest-cov>=5",
+    "pytest-asyncio>=0.23",
 ]
 
 [tool.setuptools.packages.find]
@@ -23,6 +24,7 @@ include = ["pyutcp_lab*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+asyncio_mode = "auto"
 
 [tool.coverage.run]
 source = ["pyutcp_lab"]
