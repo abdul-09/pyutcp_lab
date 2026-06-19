@@ -71,7 +71,7 @@ class Interleaver:
 
     The pool calls :meth:`hook` at each cooperative yield point, passing the
     point's name. When the hook fires for the target point for the first time,
-    the interleaver runs ``action`` once — simulating another caller running to
+    the interleaver runs ``action`` once, simulating another caller running to
     completion in the middle of the first caller's ``acquire``. This makes a
     check-then-act race deterministic: it triggers on every run or never.
     """

@@ -1,4 +1,4 @@
-"""Tests for pyutcp_lab.core.errors — verifying the hierarchy and payloads."""
+"""Tests for pyutcp_lab.core.errors: verifying the hierarchy and payloads."""
 
 from __future__ import annotations
 

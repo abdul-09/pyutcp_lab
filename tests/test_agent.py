@@ -78,13 +78,13 @@ class TestCheckpointRoundTrip:
 
 
 class TestResumeFromCheckpoint:
-    """The state invariant the M9 task is built around.
+    """Checkpoint mid-run, then resume in a fresh orchestrator.
 
-    A run checkpointed *mid-execution* and resumed in a fresh orchestrator must
-    produce the same final results as an uninterrupted run. This requires the
-    checkpoint to carry the pending queue across serialisation — otherwise the
-    remaining steps are silently dropped and the resumed run reports only the
-    work done before the snapshot.
+    The resumed run has to finish with the same results as one that was never
+    interrupted. That only works if the checkpoint carries the pending queue
+    through serialisation. Drop it and the leftover steps just vanish: the
+    resumed run looks successful but only reports the work done before the
+    snapshot.
     """
 
     def test_mid_run_checkpoint_resumes_completely(self) -> None:

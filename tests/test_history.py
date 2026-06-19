@@ -73,12 +73,12 @@ class TestTruncation:
 
 
 class TestSystemPromptNotCharged:
-    """The memory-accounting invariant the M10 task is built around.
+    """The token budget should bound the turns, not the system prompt.
 
-    The token budget bounds the conversational turns only. The system prompt is
-    always retained and must not be charged against the budget — otherwise a
-    long system prompt shrinks the effective turn allowance and the history
-    drops turns that should have fit.
+    The budget is meant for the conversational turns only. The system prompt
+    always stays and shouldn't count against it. If it does, a long system
+    prompt quietly shrinks how much conversation fits, and turns that were well
+    within budget get dropped anyway.
     """
 
     def test_large_system_prompt_does_not_evict_fitting_turns(self) -> None:

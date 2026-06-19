@@ -51,11 +51,11 @@ class TestSSEParser:
         assert parser.feed(b"event: ping\n\n") == []
 
     def test_partial_frame_buffered_until_complete(self) -> None:
-        """The frame-boundary invariant the M8 SSE task is built around.
+        """An event split across reads should parse as one event.
 
-        An event whose bytes arrive across two reads must be buffered and parsed
-        as a single event once its terminating blank line arrives, not split or
-        dropped at the chunk boundary.
+        When an event's bytes show up across two reads, the parser has to
+        buffer the partial frame and emit it once the terminating blank line
+        arrives, instead of splitting or losing it at the chunk boundary.
         """
         parser = SSEParser()
         # First chunk ends mid-event (no terminating blank line yet).
@@ -124,7 +124,7 @@ class TestSSETransport:
             SSETransport(http, connect=lambda p: None)  # type: ignore[arg-type,return-value]
 
     def test_stream_yields_events_across_chunks(self) -> None:
-        # The result event is deliberately split across two reads.
+        # The result event is split across two reads on purpose.
         conn = FakeConnection(
             [b'data: {"n": ', b'1}\n\n', b'data: {"n": 2}\n\n'], FakeClock()
         )

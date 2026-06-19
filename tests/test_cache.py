@@ -115,11 +115,12 @@ class TestLRUEviction:
 
 
 class TestHitUpdatesRecency:
-    """The eviction invariant the M6 task is built around.
+    """A read should keep an entry alive under eviction pressure.
 
-    A cache hit must mark the entry most-recently-used. Otherwise a hot entry
-    that is read constantly but inserted early is evicted as though it were
-    cold, even while colder entries inserted later survive.
+    Reading an entry has to mark it most-recently-used. If it doesn't, an entry
+    that gets read all the time but happened to be inserted early gets evicted
+    like a cold one, while genuinely colder entries that were inserted later
+    stick around.
     """
 
     def test_read_protects_entry_from_eviction(self, clock: FakeClock) -> None:

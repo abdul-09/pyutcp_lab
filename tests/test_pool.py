@@ -110,13 +110,13 @@ class TestGlobalCapAndEviction:
 
 
 class TestConcurrentAcquireInvariant:
-    """The invariant the M3 latency task is built around.
+    """Concurrent acquires must respect the per-host cap.
 
-    Under concurrent acquisition against a single host, the number of live
-    connections must never exceed ``per_host``. The Interleaver runs a second
-    caller's full acquire at the exact yield point inside the first caller's
-    acquire, deterministically reproducing the check-then-acquire interleaving
-    that a naive pool gets wrong.
+    No matter how acquires interleave against a single host, the live
+    connection count can't go over ``per_host``. The Interleaver runs a second
+    caller's whole acquire right at the yield point inside the first caller's
+    acquire, so the check-then-acquire ordering that a naive pool gets wrong
+    happens every run instead of once in a blue moon.
     """
 
     def test_two_callers_never_exceed_per_host_cap(self) -> None:

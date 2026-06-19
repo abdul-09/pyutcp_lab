@@ -156,11 +156,11 @@ class TestHttpTransportStream:
 
 
 class TestReadTimeoutBudget:
-    """The behaviour the M2 latency task is built around.
+    """A slow trickling response can't outlast the deadline.
 
-    A response that trickles in slowly must not be able to outlast the caller's
-    deadline. Each read is charged against the remaining budget, and the
-    per-read timeout shrinks as the budget is consumed.
+    A response that dribbles in slowly shouldn't be able to run past the
+    caller's deadline. Every read is charged against the time that's left, and
+    the per-read timeout gets smaller as the budget runs down.
     """
 
     def test_slow_response_aborts_within_budget(

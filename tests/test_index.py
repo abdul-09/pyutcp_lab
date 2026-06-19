@@ -103,12 +103,12 @@ class TestRemove:
 
 
 class TestTokenLeak:
-    """The memory invariant the M5 task is built around.
+    """Token count should track live tools, not everything ever indexed.
 
-    The index's distinct-token count must track the *live* tool set, not the
-    cumulative history of every tool ever indexed. Repeatedly adding and
-    removing tools that introduce unique tokens must not grow the index, because
-    a posting set left empty after removal should have its token pruned.
+    The number of distinct tokens the index holds should follow the live tool
+    set. Adding and removing tools that bring their own unique tokens shouldn't
+    make the index grow without bound, which means a posting set that goes empty
+    after a removal needs its token dropped too.
     """
 
     def test_token_count_returns_to_zero(self, index: SearchIndex) -> None:

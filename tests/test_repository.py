@@ -60,12 +60,11 @@ class TestDeregister:
             repo.deregister("nope")
 
     def test_deregister_removes_all_its_tools(self, repo: ToolRepository) -> None:
-        """The state invariant the M4 task is built around.
+        """Deregistering a provider has to take its tools with it.
 
-        Deregistering a provider must remove every tool it owned from *both* the
-        provider index and the tool index. A tool must never outlive its
-        provider — otherwise a later lookup hands back a tool that can no longer
-        be called.
+        When a provider goes away, every tool it owned has to leave both the
+        provider index and the tool index. A tool can't outlive its provider,
+        or a later lookup returns something that can't actually be called.
         """
         repo.register(make_manual("p", "p.a", "p.b"))
         repo.register(make_manual("q", "q.a"))

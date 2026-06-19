@@ -76,13 +76,13 @@ class TestClientSingleCall:
 
 
 class TestCallChainBudget:
-    """The latency invariant the M7 task is built around.
+    """A chain of calls must not outlast its shared budget.
 
-    A chain of tool calls runs under one shared budget. Each call must execute
-    under a deadline derived from the budget's *remaining* time, so a slow early
-    call leaves less time for later ones and the chain as a whole cannot outlast
-    the budget. If the client fails to thread the budget into each call, a chain
-    runs every call under the transport's own generous timeout and overruns.
+    All the calls in a chain share one budget. Each one needs to run under a
+    deadline computed from whatever time is left, so a slow early call eats into
+    what the later ones get. If the client checks the budget but forgets to pass
+    a deadline down, every call falls back to the transport's own generous
+    timeout and the whole chain blows past the budget.
     """
 
     def _client(self, clock: FakeClock, transport: FakeTransport) -> UtcpClient:
