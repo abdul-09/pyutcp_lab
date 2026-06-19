@@ -75,6 +75,66 @@ class TestClientSingleCall:
         assert client.call(ToolCall(tool_name="p.a")) == "ok"
 
 
+class TestClientValidationAndMetrics:
+    def _manual_with_schema(self) -> Manual:
+        schema = {
+            "type": "object",
+            "required": ["city"],
+            "properties": {"city": {"type": "string"}},
+        }
+        return Manual(
+            provider=Provider(name="w", transport=TransportType.HTTP, url="http://x"),
+            tools=(Tool(name="w.forecast", inputs=schema),),
+        )
+
+    def test_validation_rejects_bad_arguments(self) -> None:
+        from pyutcp_lab.core.schema import ArgumentValidationError
+
+        clock = FakeClock()
+        transport = FakeTransport(clock)
+        client = UtcpClient(
+            resolve_transport=lambda name: transport, validate_arguments=True
+        )
+        client.register(self._manual_with_schema())
+        with pytest.raises(ArgumentValidationError):
+            client.call(ToolCall(tool_name="w.forecast", arguments={}))
+
+    def test_validation_accepts_good_arguments(self) -> None:
+        clock = FakeClock()
+        transport = FakeTransport(clock, result="sunny")
+        client = UtcpClient(
+            resolve_transport=lambda name: transport, validate_arguments=True
+        )
+        client.register(self._manual_with_schema())
+        out = client.call(
+            ToolCall(tool_name="w.forecast", arguments={"city": "Nairobi"})
+        )
+        assert out == "sunny"
+
+    def test_validation_passes_through_tool_without_schema(self) -> None:
+        clock = FakeClock()
+        transport = FakeTransport(clock, result="ok")
+        client = UtcpClient(
+            resolve_transport=lambda name: transport, validate_arguments=True
+        )
+        client.register(manual("p", "p.noschema"))  # tool has empty inputs
+        assert client.call(ToolCall(tool_name="p.noschema", arguments={"x": 1})) == "ok"
+
+    def test_metrics_recorded(self) -> None:
+        from pyutcp_lab.client.metrics import MetricsCollector
+
+        clock = FakeClock(start=0.0)
+        transport = FakeTransport(clock, call_cost=1.5)
+        metrics = MetricsCollector(clock=clock.time)
+        client = UtcpClient(resolve_transport=lambda name: transport, metrics=metrics)
+        client.register(manual("p", "p.a"))
+        client.call(ToolCall(tool_name="p.a"))
+        stats = metrics.stats_for("p.a")
+        assert stats.calls == 1
+        assert stats.failures == 0
+        assert client.metrics is metrics
+
+
 class TestCallChainBudget:
     """A chain of calls must not outlast its shared budget.
 
