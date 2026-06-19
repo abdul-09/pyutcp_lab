@@ -3,16 +3,16 @@
 Tool-call results are cached under a caller-supplied key. Two independent
 policies bound the cache:
 
-* **TTL** — an entry older than ``ttl`` seconds is treated as absent and is
+* **TTL**: an entry older than ``ttl`` seconds is treated as absent and is
   evicted lazily on the next access.
-* **LRU capacity** — at most ``max_entries`` live entries are kept; when a new
+* **LRU capacity**: at most ``max_entries`` live entries are kept; when a new
   entry would exceed that, the least-recently-*used* entry is evicted.
 
 "Used" means accessed, not merely inserted. Both :meth:`get` (on a hit) and
 :meth:`set` must mark an entry as most-recently-used, so that an entry which is
 read frequently is protected from eviction even if it was inserted long ago. A
 cache that updates recency only on insertion degrades to first-in-first-out
-under load and will evict hot entries — correct values, wrong eviction order.
+under load and will evict hot entries, returning correct values but in the wrong eviction order.
 
 Time is read through an injectable clock so TTL behaviour is deterministic in
 tests with no real waiting.

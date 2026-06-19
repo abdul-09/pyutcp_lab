@@ -9,7 +9,7 @@ in the name and tags over the description).
 Index maintenance has one easily-missed invariant: when a tool is removed, every
 posting referencing it must be dropped *and* any token whose posting set becomes
 empty must be deleted from the index entirely. Leaving empty posting sets behind
-keeps search results correct — an empty set matches nothing — but lets the
+keeps search results correct (an empty set matches nothing) but lets the
 index's key set grow without bound across repeated add/remove churn. The index
 must therefore prune empty tokens eagerly so its footprint tracks the live tool
 set, not the cumulative history of tools it has ever seen.

@@ -1,7 +1,7 @@
 """Latency budget for multi-step operations.
 
-A single logical operation — discovering a provider, then calling two tools in
-sequence, say — should respect *one* end-to-end time budget rather than letting
+A single logical operation (discovering a provider, then calling two tools in
+sequence, say) should respect *one* end-to-end time budget rather than letting
 each step spend the full per-call timeout independently. A :class:`Budget`
 captures that total deadline and hands out per-step :class:`Deadline` objects
 derived from the time still remaining.

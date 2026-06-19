@@ -9,7 +9,7 @@ point at which a real async pool would yield to the event loop is marked by a
 call to an injectable *scheduler hook*. In production the hook does nothing; in
 tests it is a deterministic scheduler that interleaves several logical callers at
 exactly those points. This keeps the pool's concurrent behaviour fully
-reproducible — there are no sleeps and no reliance on thread timing — while still
+reproducible (there are no sleeps and no reliance on thread timing) while still
 exercising the real check-then-acquire logic that makes pooling subtle.
 """
 

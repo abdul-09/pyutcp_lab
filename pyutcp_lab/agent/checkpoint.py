@@ -5,9 +5,9 @@ state into a plain, JSON-serialisable dict, and a later process restores that
 dict to continue exactly where it left off. For resumption to be correct the
 snapshot must capture *both* halves of the run state:
 
-* ``completed`` — the steps already executed and their results, so finished work
+* ``completed``: the steps already executed and their results, so finished work
   is not repeated; and
-* ``pending`` — the steps not yet executed, so remaining work is not lost.
+* ``pending``: the steps not yet executed, so remaining work is not lost.
 
 Dropping either half breaks resumption. Omitting ``completed`` re-runs finished
 steps (wasteful, and wrong if a tool has side effects); omitting ``pending``
@@ -55,7 +55,7 @@ class Checkpoint:
     pending: list[ToolCall] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
-        """Serialise the full run state — both completed and pending work."""
+        """Serialise the full run state: both completed and pending work."""
         return {
             "completed": [c.to_dict() for c in self.completed],
             "pending": [

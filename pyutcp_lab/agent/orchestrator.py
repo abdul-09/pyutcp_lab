@@ -1,11 +1,11 @@
 """Orchestrator for resumable tool-chain runs.
 
-The orchestrator executes a *plan* — an ordered list of tool calls — through a
+The orchestrator executes a *plan* (an ordered list of tool calls) through a
 :class:`UtcpClient`, tracking which steps have completed and which remain. A run
 can be checkpointed at any point and restored later (in this or another process)
 to continue from exactly where it paused.
 
-The state the orchestrator maintains is deliberately split into ``_completed``
+The orchestrator keeps its state split into ``_completed``
 and ``_pending`` so a checkpoint can preserve both. Resumption correctness rests
 on that split round-tripping faithfully: restore must repopulate the pending
 queue, or the remaining steps are silently dropped.

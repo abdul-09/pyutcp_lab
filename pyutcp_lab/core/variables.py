@@ -9,7 +9,7 @@ resolved against a layered set of sources before the provider is usable:
 
 Earlier sources win over later ones. Substitution is recursive: a variable's
 value may itself reference other variables. Recursion is bounded by cycle
-detection — a reference chain that returns to a name already being resolved
+detection. A reference chain that returns to a name already being resolved
 raises :class:`~pyutcp_lab.core.errors.CyclicVariableError` rather than
 recursing until the interpreter's stack limit.
 """

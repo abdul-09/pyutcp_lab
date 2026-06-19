@@ -12,9 +12,9 @@ Two indices are kept in lock-step:
 
 Every mutation must leave these two consistent: a tool is present in ``_tools``
 if and only if its provider is present in ``_providers`` *and* still lists it.
-Registration is treated as a whole-provider replacement — re-registering a
+Registration is treated as a whole-provider replacement. Re-registering a
 provider atomically swaps in its new tool set and retires tools it no longer
-exposes — so a provider can never leave stale entries behind.
+exposes, so a provider can never leave stale entries behind.
 """
 
 from __future__ import annotations

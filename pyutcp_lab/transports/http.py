@@ -74,7 +74,7 @@ class HttpTransport(Transport):
     ) -> bytes:
         """Drain the response, charging every read against the deadline.
 
-        This is the crux of correct latency behaviour: the deadline is checked
+        This is what keeps the latency behaviour correct: the deadline is checked
         before *each* read and the per-read timeout shrinks as the budget is
         consumed, so a slow trickling response cannot outlast the budget.
         """

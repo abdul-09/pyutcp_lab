@@ -2,7 +2,7 @@
 
 The history holds a fixed *system prompt* plus an ordered list of conversational
 *turns*. To keep a model context within limits, the history enforces a token
-budget — but that budget governs only the conversational turns. The system
+budget. That budget governs only the conversational turns, though. The system
 prompt is structural: it is always retained in full and is not charged against
 the turn budget. Conflating the two makes a long system prompt steal room from
 the conversation, truncating turns far earlier than the configured budget

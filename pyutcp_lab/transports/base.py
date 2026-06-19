@@ -4,15 +4,15 @@ A *transport* knows how to talk to one provider over one wire protocol. Every
 transport implements the same four-method contract so the client can treat HTTP,
 SSE, CLI, and the rest uniformly:
 
-* :meth:`Transport.discover` — fetch the provider's manual (its tool list).
-* :meth:`Transport.call` — invoke one tool and return its result.
-* :meth:`Transport.stream` — invoke one tool and yield result chunks.
-* :meth:`Transport.close` — release any held resources.
+* :meth:`Transport.discover`: fetch the provider's manual (its tool list).
+* :meth:`Transport.call`: invoke one tool and return its result.
+* :meth:`Transport.stream`: invoke one tool and yield result chunks.
+* :meth:`Transport.close`: release any held resources.
 
 Calls carry a :class:`Deadline` so that a slow transport can be abandoned once
 the caller's time budget is spent. Concrete transports are responsible for
 honouring the deadline across *every* blocking step they perform, not just the
-first one — the most common latency bug is a transport that bounds connect time
+first one. The most common latency bug is a transport that bounds connect time
 but lets reads run unbounded.
 """
 

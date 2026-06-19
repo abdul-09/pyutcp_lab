@@ -1,7 +1,7 @@
 """Server-Sent Events (SSE) transport.
 
 SSE delivers a stream of *events*, each a block of lines terminated by a blank
-line — that is, events are separated by ``\\n\\n``. Within an event, one or more
+line. That is, events are separated by ``\\n\\n``. Within an event, one or more
 ``data:`` lines carry the payload (multiple ``data:`` lines are joined with
 newlines), and other fields (``event:``, ``id:``) may appear.
 
@@ -9,8 +9,8 @@ The wire does not respect event boundaries when it splits the byte stream into
 chunks: a single event may arrive across two reads, and one read may contain
 several events plus the start of another. The parser must therefore keep a
 buffer of bytes not yet forming a complete event and only emit events once their
-terminating blank line has been seen. Parsing each chunk independently — or
-splitting on single newlines instead of the blank-line delimiter — corrupts any
+terminating blank line has been seen. Parsing each chunk on its own, or
+splitting on single newlines instead of the blank-line delimiter, corrupts any
 event that straddles a chunk boundary or spans multiple ``data:`` lines.
 """
 
