@@ -38,6 +38,7 @@ class TransportType(str, Enum):
     CLI = "cli"
     STREAMING_HTTP = "streaming_http"
     GRAPHQL = "graphql"
+    WEBSOCKET = "websocket"
     MCP = "mcp"
     TEXT = "text"
 
