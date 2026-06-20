@@ -1,5 +1,9 @@
 """Transport layer: the per-protocol wire adapters and resilience helpers."""
 
+from .async_base import AsyncConnection, AsyncTransportBase
+from .async_http import AsyncConnectionFactory, AsyncHttpTransport
+from .async_retry import call_with_retry_async
+from .async_sse import AsyncSSETransport
 from .base import Deadline, Transport
 from .cli import CliTransport, Runner
 from .graphql import GraphQLTransport, build_query
@@ -16,6 +20,11 @@ from .retry import (
 from .sse import SSEEvent, SSEParser, SSETransport
 
 __all__ = [
+    "AsyncConnection",
+    "AsyncConnectionFactory",
+    "AsyncHttpTransport",
+    "AsyncSSETransport",
+    "AsyncTransportBase",
     "BreakerState",
     "CircuitBreaker",
     "CircuitBreakerOpenError",
@@ -36,4 +45,5 @@ __all__ = [
     "Transport",
     "build_query",
     "call_with_retry",
+    "call_with_retry_async",
 ]
