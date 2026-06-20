@@ -20,6 +20,7 @@ from ..core.config import Config, ProviderConfig
 from ..core.errors import TransportError
 from ..core.models import Provider
 from ..core.variables import VariableResolver
+from ..registry.cache import ResultCache
 from ..registry.repository import ToolRepository
 from ..transports.base import Transport
 from .client import UtcpClient
@@ -57,6 +58,7 @@ def client_from_config(
     resolver: VariableResolver = _NULL_RESOLVER,
     repository: Optional[ToolRepository] = None,
     metrics: Optional[MetricsCollector] = None,
+    cache: Optional[ResultCache] = None,
     validate_arguments: bool = False,
     discover: bool = True,
 ) -> UtcpClient:
@@ -90,5 +92,6 @@ def client_from_config(
         resolve_transport=resolve_transport,
         repository=repo,
         metrics=metrics,
+        cache=cache,
         validate_arguments=validate_arguments,
     )
