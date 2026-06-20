@@ -1,5 +1,6 @@
 """Core domain layer: models, variable substitution, errors, schema, and auth."""
 
+from .config import Config, ConfigError, ProviderConfig, load_config, load_config_file
 from .auth import (
     ApiKeyAuth,
     Auth,
@@ -35,6 +36,8 @@ __all__ = [
     "ArgumentValidationError",
     "Auth",
     "AuthError",
+    "Config",
+    "ConfigError",
     "BasicAuth",
     "BearerAuth",
     "CyclicVariableError",
@@ -54,8 +57,11 @@ __all__ = [
     "UtcpError",
     "ValidationError",
     "VariableError",
+    "ProviderConfig",
     "VariableResolver",
     "auth_from_dict",
+    "load_config",
+    "load_config_file",
     "ensure_valid_arguments",
     "parse_dotenv",
     "validate_arguments",
