@@ -190,3 +190,47 @@ class AsyncFakeConnection:
     async def close(self) -> None:
         self.closed = True
 
+
+class FakeWebSocket:
+    """A scripted synchronous WebSocket connection.
+
+    ``frames`` is the sequence of raw text frames recv() returns in order. Sent
+    messages are recorded. Running out of frames raises, surfacing a test that
+    expected more responses than the script provides.
+    """
+
+    def __init__(self, frames: list[str]) -> None:
+        self._frames = list(frames)
+        self.sent: list[str] = []
+        self.closed = False
+
+    def send(self, message: str) -> None:
+        self.sent.append(message)
+
+    def recv(self, *, timeout: float) -> str:
+        if not self._frames:
+            raise TransportError("no more frames scripted")
+        return self._frames.pop(0)
+
+    def close(self) -> None:
+        self.closed = True
+
+
+class AsyncFakeWebSocket:
+    """Awaitable counterpart to FakeWebSocket."""
+
+    def __init__(self, frames: list[str]) -> None:
+        self._frames = list(frames)
+        self.sent: list[str] = []
+        self.closed = False
+
+    async def send(self, message: str) -> None:
+        self.sent.append(message)
+
+    async def recv(self, *, timeout: float) -> str:
+        if not self._frames:
+            raise TransportError("no more frames scripted")
+        return self._frames.pop(0)
+
+    async def close(self) -> None:
+        self.closed = True
