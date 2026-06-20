@@ -9,6 +9,7 @@ from .async_pool import (
 from .async_http import AsyncConnectionFactory, AsyncHttpTransport
 from .async_retry import call_with_retry_async
 from .async_sse import AsyncSSETransport
+from .async_websocket import AsyncWebSocket, AsyncWebSocketTransport
 from .base import Deadline, Transport
 from .cli import CliTransport, Runner
 from .graphql import GraphQLTransport, build_query
@@ -23,6 +24,8 @@ from .retry import (
     call_with_retry,
 )
 from .sse import SSEEvent, SSEParser, SSETransport
+from .websocket import WebSocket, WebSocketTransport
+from .ws_protocol import FrameError, Request, Response
 
 __all__ = [
     "AsyncConnection",
@@ -31,6 +34,8 @@ __all__ = [
     "AsyncConnectionFactory",
     "AsyncHttpTransport",
     "AsyncSSETransport",
+    "AsyncWebSocket",
+    "AsyncWebSocketTransport",
     "AsyncTransportBase",
     "BreakerState",
     "CircuitBreaker",
@@ -49,8 +54,13 @@ __all__ = [
     "Runner",
     "SSEEvent",
     "SSEParser",
+    "FrameError",
+    "Request",
+    "Response",
     "SSETransport",
     "Transport",
+    "WebSocket",
+    "WebSocketTransport",
     "build_query",
     "call_with_retry",
     "call_with_retry_async",
