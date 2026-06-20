@@ -1,6 +1,11 @@
 """Transport layer: the per-protocol wire adapters and resilience helpers."""
 
 from .async_base import AsyncConnection, AsyncTransportBase
+from .async_pool import (
+    AsyncConnectionPool,
+    AsyncPooledConnection,
+    PoolTimeoutError,
+)
 from .async_http import AsyncConnectionFactory, AsyncHttpTransport
 from .async_retry import call_with_retry_async
 from .async_sse import AsyncSSETransport
@@ -21,6 +26,8 @@ from .sse import SSEEvent, SSEParser, SSETransport
 
 __all__ = [
     "AsyncConnection",
+    "AsyncConnectionPool",
+    "AsyncPooledConnection",
     "AsyncConnectionFactory",
     "AsyncHttpTransport",
     "AsyncSSETransport",
@@ -35,6 +42,7 @@ __all__ = [
     "Deadline",
     "GraphQLTransport",
     "HttpTransport",
+    "PoolTimeoutError",
     "PooledConnection",
     "RetryExhaustedError",
     "RetryPolicy",
