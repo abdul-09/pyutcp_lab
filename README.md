@@ -19,7 +19,7 @@ substitution, the transports, the registry, the client, and the agent.
 ```
 pyutcp_lab/
   core/        domain models, ${VAR} substitution, typed errors
-  transports/  HTTP, SSE, CLI, GraphQL transports (sync and async),
+  transports/  HTTP, SSE, CLI, GraphQL, WebSocket transports (sync and async),
                connection pooling, retry, and circuit breaking
   registry/    in-memory repository, search index, result cache
   client/      sync and async clients, latency budget, metrics, caching
