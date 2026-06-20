@@ -152,3 +152,41 @@ class FakeClient:
         self.calls.append(name)
         return {"tool": name, "n": index}
 
+
+class AsyncFakeConnection:
+    """Awaitable counterpart to FakeConnection for async transport tests.
+
+    ``chunks`` is returned one fragment per ``read``, then ``b""`` at end of
+    stream. Each read advances ``clock`` by ``read_cost`` and raises if the
+    requested timeout is smaller than that cost.
+    """
+
+    def __init__(
+        self,
+        chunks: list[bytes],
+        clock: "FakeClock",
+        *,
+        read_cost: float = 0.0,
+    ) -> None:
+        self._chunks = list(chunks)
+        self._clock = clock
+        self._read_cost = read_cost
+        self.closed = False
+        self.requests: list[tuple[str, str, Optional[bytes]]] = []
+
+    async def request(self, method: str, path: str, body: Optional[bytes]) -> None:
+        self.requests.append((method, path, body))
+
+    async def read(self, *, timeout: float) -> bytes:
+        if self._read_cost > timeout:
+            raise TransportError(
+                f"read timed out: needed {self._read_cost}s, allowed {timeout}s"
+            )
+        self._clock.advance(self._read_cost)
+        if not self._chunks:
+            return b""
+        return self._chunks.pop(0)
+
+    async def close(self) -> None:
+        self.closed = True
+
