@@ -118,3 +118,21 @@ class TestClientFromConfig:
         )
         with pytest.raises(TransportError):
             client.call(ToolCall(tool_name="ghost.x"))
+
+
+class TestBootstrapCache:
+    def test_cache_passed_through(self) -> None:
+        from pyutcp_lab.registry.cache import ResultCache
+
+        config = _config({"name": "p", "transport": "http", "url": "http://x"})
+        cache = ResultCache(max_entries=10, ttl=100)
+        client = client_from_config(
+            config, lambda p: DiscoverableTransport(p, ("p.a",)), cache=cache
+        )
+        assert client.cache is cache
+        # First call hits transport; second is served from cache.
+        client.call(ToolCall(tool_name="p.a"))
+        client.call(ToolCall(tool_name="p.a"))
+        # DiscoverableTransport always returns a result, so a cached second call
+        # is indistinguishable by value; assert the cache holds the entry.
+        assert len(cache) == 1

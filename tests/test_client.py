@@ -209,3 +209,65 @@ class TestCallChainBudget:
             [ToolCall(tool_name="p.a"), ToolCall(tool_name="p.b")], budget=budget
         )
         assert out == ["done", "done"]
+
+
+class TestClientCaching:
+    """Result caching on the sync client."""
+
+    def _client_with_cache(self, transport, cache):
+        client = UtcpClient(resolve_transport=lambda name: transport, cache=cache)
+        client.register(manual("p", "p.a", "p.b"))
+        return client
+
+    def test_second_call_served_from_cache(self) -> None:
+        from pyutcp_lab.registry.cache import ResultCache
+
+        clock = FakeClock(start=0.0)
+        # FakeTransport returns the same result each call; count calls to prove
+        # the transport is hit only once.
+        transport = FakeTransport(clock, result={"v": 1})
+        cache = ResultCache(max_entries=10, ttl=100, clock=clock.time)
+        client = self._client_with_cache(transport, cache)
+
+        first = client.call(ToolCall(tool_name="p.a", arguments={"x": 1}))
+        second = client.call(ToolCall(tool_name="p.a", arguments={"x": 1}))
+        assert first == second == {"v": 1}
+        assert transport.call_count == 1  # second served from cache
+
+    def test_different_arguments_not_shared(self) -> None:
+        from pyutcp_lab.registry.cache import ResultCache
+
+        clock = FakeClock(start=0.0)
+        transport = FakeTransport(clock, result="r")
+        cache = ResultCache(max_entries=10, ttl=100, clock=clock.time)
+        client = self._client_with_cache(transport, cache)
+
+        client.call(ToolCall(tool_name="p.a", arguments={"x": 1}))
+        client.call(ToolCall(tool_name="p.a", arguments={"x": 2}))
+        assert transport.call_count == 2  # distinct args -> distinct cache keys
+
+    def test_use_cache_false_bypasses(self) -> None:
+        from pyutcp_lab.registry.cache import ResultCache
+
+        clock = FakeClock(start=0.0)
+        transport = FakeTransport(clock, result="r")
+        cache = ResultCache(max_entries=10, ttl=100, clock=clock.time)
+        client = self._client_with_cache(transport, cache)
+
+        client.call(ToolCall(tool_name="p.a"))
+        client.call(ToolCall(tool_name="p.a"), use_cache=False)
+        assert transport.call_count == 2  # bypass forces a fresh transport call
+        assert client.cache is cache
+
+    def test_expired_entry_refetches(self) -> None:
+        from pyutcp_lab.registry.cache import ResultCache
+
+        clock = FakeClock(start=0.0)
+        transport = FakeTransport(clock, result="r")
+        cache = ResultCache(max_entries=10, ttl=5, clock=clock.time)
+        client = self._client_with_cache(transport, cache)
+
+        client.call(ToolCall(tool_name="p.a"))
+        clock.advance(6.0)  # entry now expired
+        client.call(ToolCall(tool_name="p.a"))
+        assert transport.call_count == 2
